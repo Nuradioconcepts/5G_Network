@@ -1,0 +1,43 @@
+# This example configuration outlines how to configure the srsRAN Project gNB to create a single TDD cell
+# transmitting in band 78, with 20 MHz bandwidth and 30 kHz sub-carrier-spacing. A USRP B200 is configured 
+# as the RF frontend using split 8. Note in this example an external clock source is not used, so the sync 
+# is not defined and the default is used. 
+
+amf:
+  addr: 100.122.126.173                                               # The address or hostname of the AMF.
+  bind_addr: 100.122.128.121                                            # A local IP that the gNB binds to for traffic from the AMF.
+
+ru_sdr:
+  device_driver: uhd                                              # The RF driver name.
+  device_args: type=b200                                          # Optionally pass arguments to the selected RF driver.
+  clock: gpsdo
+  sync: gpsdo
+  srate: 23.04                                                    # RF sample rate might need to be adjusted according to selected bandwidth.
+  otw_format: sc12  
+  tx_gain: 70                                                     # Transmit gain of the RF might need to adjusted to the given situation.
+  rx_gain: 60                                                     # Receive gain of the RF might need to adjusted to the given situation.
+
+cell_cfg:
+  dl_arfcn: 368500                                                # ARFCN of the downlink carrier (center frequency)
+  band: 3                                                         # The NR band.
+  channel_bandwidth_MHz: 10                                       # Bandwith in MHz. Number of PRBs will be automatically derived.
+  common_scs: 15                                                  # Subcarrier spacing in kHz used for data.
+  plmn: "00101"                                                   # PLMN broadcasted by the gNB.
+  tac: 77                                                         # Tracking area code (needs to match the core configuration).
+  pci: 1                                                          # Physical cell ID.
+  pdcch:
+    dedicated:
+      ss2_type: common
+      dci_format_0_1_and_1_1: false
+  prach:
+    prach_config_index: 1
+
+log:
+  filename: /tmp/gnb.log                                          # Path of the log file.
+  all_level: debug                                                # Logging level applied to all layers. 
+
+pcap:
+  mac_enable: true                                               # Set to true to enable MAC-layer PCAPs.
+  mac_filename: /tmp/gnb_mac.pcap                                 # Path where the MAC PCAP is stored.
+  ngap_enable: true                                              # Set to true to enable NGAP PCAPs.
+  ngap_filename: /tmp/gnb_ngap.pcap                               # Path where the NGAP PCAP is stored.
